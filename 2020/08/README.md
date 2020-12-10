@@ -45,28 +45,38 @@ Immediately before the program would run an instruction a second time, the value
 Run your copy of the boot code. Immediately before any instruction is executed a second time, what value is in the accumulator?
 
 ## --- Part Two ---
-It's getting pretty expensive to fly these days - not because of ticket prices, but because of the ridiculous number of bags you need to buy!
+After some careful analysis, you believe that exactly one instruction is corrupted.
 
-Consider again your `shiny gold` bag and the rules from the above example:
+Somewhere in the program, either a `jmp` is supposed to be a `nop`, or a `nop` is supposed to be a `jmp`. (No `acc` instructions were harmed in the corruption of this boot code.)
 
-- `faded blue` bags contain `0` other bags.
-- `dotted black` bags contain `0` other bags.
-- `vibrant plum` bags contain `11` other bags: 5 `faded blue` bags and 6 `dotted black` bags.
-- `dark olive` bags contain `7` other bags: 3 `faded blue` bags and 4 `dotted black` bags.
-So, a single `shiny gold` bag must contain 1 `dark olive` bag (and the 7 bags within it) plus 2 `vibrant plum` bags (and the 11 bags within each of those): `1 + 1*7 + 2 + 2*11` = `32` bags!
+The program is supposed to terminate by attempting to execute an instruction immediately after the last instruction in the file. By changing exactly one `jmp` or `nop`, you can repair the boot code and make it terminate correctly.
 
-Of course, the actual rules have a small chance of going several levels deeper than this example; be sure to count all of the bags, even if the nesting becomes topologically impractical!
-
-Here's another example:
+For example, consider the same program from above:
 ```
-shiny gold bags contain 2 dark red bags.
-dark red bags contain 2 dark orange bags.
-dark orange bags contain 2 dark yellow bags.
-dark yellow bags contain 2 dark green bags.
-dark green bags contain 2 dark blue bags.
-dark blue bags contain 2 dark violet bags.
-dark violet bags contain no other bags.
+nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6
 ```
-In this example, a single `shiny gold` bag must contain `126` other bags.
+If you change the first instruction from `nop +0` to `jmp +0`, it would create a single-instruction infinite loop, never leaving that instruction. If you change almost any of the `jmp` instructions, the program will still eventually find another `jmp` instruction and loop forever.
 
-How many individual bags are required inside your single shiny gold bag?
+However, if you change the second-to-last instruction (from `jmp -4` to `nop -4`), the program terminates! The instructions are visited in this order:
+```
+nop +0  | 1
+acc +1  | 2
+jmp +4  | 3
+acc +3  |
+jmp -3  |
+acc -99 |
+acc +1  | 4
+nop -4  | 5
+acc +6  | 6
+```
+After the last instruction (`acc +6`), the program terminates by attempting to run the instruction below the last instruction in the file. With this change, after the program terminates, the accumulator contains the value `8` (`acc +1`, `acc +1`, `acc +6`).
+
+Fix the program so that it terminates normally by changing exactly one `jmp` (to `nop`) or `nop` (to `jmp`). What is the value of the accumulator after the program terminates?
