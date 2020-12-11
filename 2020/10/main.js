@@ -72,4 +72,9 @@ let indexes = [
 const encryptionSpan = input.filter((n, i) => i >= indexes[0] && i <= indexes[1])
   .sort((a, b) => a - b)
 
+// 1446749368 too high
+// 498256625 too high
+// 76688505
+// 65118771 too low
+
 console.log('main.js@:5', input[weakPoint], encryptionSpan[0] + encryptionSpan[encryptionSpan.length - 1]);
