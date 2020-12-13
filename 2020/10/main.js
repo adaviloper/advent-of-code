@@ -5,76 +5,35 @@ const tap = (data, callback) => {
   return data;
 }
 
-const preambleSize = 25;
-
-const getPreamble = (index) => {
-  return input.filter((n, i) => i >= index - preambleSize && i < index);
-}
-
-let preamble = [];
-let target = input[preambleSize];
-let differences = {};
-
-const init = () => {
-  for (let i = preambleSize; i < input.length; i++) {
-    preamble = getPreamble(i);
-    target = input[i];
-    differences = preamble.reduce((accumulator, n) => {
-      return tap(accumulator, (differences) => {
-        const collection = new Set(preamble);
-        if (target - n >= 0 && collection.has(n) && collection.has(target - n)) {
-          differences[`${target - n}`] = n;
-        }
-      });
-    }, {});
-
-    if (Object.keys(differences).length === 0) {
-      return i;
-    }
-  }
-}
-
-const weakPoint = init();
-
-const sum = (start, end) => {
-  return input.filter((n, i) => i >= start && i <= end)
-    .reduce((accumulator, n) => {
-      return accumulator + n;
-    }, 0);
-}
-
-const findAddends = () => {
-  let start = 0;
-  let end = 1;
-  const target = input[weakPoint];
-  let total;
-  while (end !== weakPoint) {
-    total = sum(start, end);
-    if (total === target) {
-      return [start, end];
-    }
-
-    if (total < target) {
-      end++;
-    } else {
-      start++;
-    }
-  }
+const differences = {
+  '-1': 0,
+  '-3': 0,
 };
 
-const [addendA, addendB] = findAddends();
+const differenceList = [];
 
-let indexes = [
-    input.findIndex(n => n === input[addendA]),
-    input.findIndex(n => n === input[addendB]),
-  ].sort((a, b) => a - b);
+let sortedAdapters = [0, ...input].sort((a, b) => a - b);
+sortedAdapters.push(sortedAdapters[sortedAdapters.length - 1] + 3)
+adapters = sortedAdapters.reduce((accumulator, joltage, index) => {
+    return tap(accumulator, (accumulator) => {
+      if (index === 0) {
+        return;
+      }
+      let difference = sortedAdapters[index] - sortedAdapters[index - 1];
+      if (difference === 3) {
+        accumulator['-3']++;
+      }
+      if (difference === 1) {
+        accumulator['-1']++;
+      }
+      differenceList.push(difference)
+    })
+}, differences);
 
-const encryptionSpan = input.filter((n, i) => i >= indexes[0] && i <= indexes[1])
-  .sort((a, b) => a - b)
+const differenceBits = differenceList.join('').replace(/[2]/g, '3').split('3');
 
-// 1446749368 too high
-// 498256625 too high
-// 76688505
-// 65118771 too low
+const twosCount = differenceBits.filter(s => s.length === 2).length;
+const threesCount = differenceBits.filter(s => s.length === 3).length;
+const foursCount = differenceBits.filter(s => s.length === 4).length;
 
-console.log('main.js@:5', input[weakPoint], encryptionSpan[0] + encryptionSpan[encryptionSpan.length - 1]);
+console.log('main.js@:10', adapters['-1'] * adapters['-3'], Math.pow(2, twosCount) * Math.pow(4, threesCount) * Math.pow(7, foursCount));
