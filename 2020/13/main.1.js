@@ -1,17 +1,36 @@
 const input = require('./data').input;
 
-class Bus {
-  constructor(headings) {
-  }
-
-  depart() {}
-}
-
 const earliestPossibleDeparture = input[0];
 
-input[1].map()
+class Bus {
+  constructor(id) {
+    this.id = id;
+    this.departsAt = 0;
+  }
 
-const ship = new Bus();
-ship.depart();
+  setNextDepartureAfter() {
+    this.departsAt = Math.ceil(earliestPossibleDeparture / this.id) * this.id;
+    return this;
+  }
 
-console.log('main.js@:24', earliestPossibleDeparture);
+  waitTime() {
+    return this.departsAt - earliestPossibleDeparture;
+  }
+}
+
+let fleet = input[1].split(',')
+  .filter(busId => busId !== 'x')
+  .map(busId => {
+    return new Bus(parseInt(busId));
+  })
+
+fleet = fleet.map(bus => {
+  return bus.setNextDepartureAfter(earliestPossibleDeparture);
+}).sort((a, b) => {
+  return a.departsAt - b.departsAt;
+})
+
+const bus = fleet[0];
+const solution = bus.waitTime() * bus.id;
+
+console.log('main.js@:24', solution);
