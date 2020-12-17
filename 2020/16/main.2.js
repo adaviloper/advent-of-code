@@ -1,11 +1,5 @@
 const input = require('./data').input;
 
-const sum = (array) => {
-  return array.reduce((accumulator, ticketValue) => {
-    return accumulator + ticketValue;
-  }, 0);
-}
-
 const transpose = (array) => {
   return array[0].map((_, colIndex) => array.map(row => row[colIndex]));
 };
@@ -62,8 +56,6 @@ transposedTickets
     if (entries.length === 1) {
       ruleKeys[index] = entries[0][0];
     }
-
-    // console.log('main.2.js@:53', entries);
   })
 
 rules = Object.values(rules).sort((a, b) => a.possibleIndices.length - b.possibleIndices.length);
@@ -84,7 +76,7 @@ while (!rules.every(rule => rule.index !== -1)) {
 rules = rules.sort((a, b) => a.index - b.index);
 let product = 1;
 
-const myTicket = input.yourTicket.split(',')
+input.yourTicket.split(',')
   .map(n => parseInt(n))
   .reduce((ticket, value, index) => {
     if (rules[index].ruleKey.startsWith('departure')) {
@@ -94,4 +86,4 @@ const myTicket = input.yourTicket.split(',')
     return ticket;
   }, {});
 
-console.log('main.1.js@:16', rules, myTicket, product);
+console.log('main.1.js@:16', product);
