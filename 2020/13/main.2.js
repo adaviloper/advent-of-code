@@ -23,13 +23,9 @@ while (true) {
     skip = passingBuses.reduce((acc, bus) => acc * bus.id, 1);
     maxLoop = passingBuses.length;
   }
-  if ((time % fleet[0].id) === ((time + fleet[1].dt) % fleet[1].id)) {
-    console.log('main.2.js@:19', time, passingBuses);
-  }
   if (passingBuses.length === fleet.length) {
     break;
   }
-  console.log('main.2.js@:19', time, skip);
   time += skip;
 }
 
