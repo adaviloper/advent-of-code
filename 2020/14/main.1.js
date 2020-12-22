@@ -1,36 +1,39 @@
+const {sum} = require('../utilities/functions');
 const input = require('./data').input;
 
-const earliestPossibleDeparture = input[0];
-
-class Bus {
-  constructor(id) {
-    this.id = id;
-    this.departsAt = 0;
-  }
-
-  setNextDepartureAfter() {
-    this.departsAt = Math.ceil(earliestPossibleDeparture / this.id) * this.id;
-    return this;
-  }
-
-  waitTime() {
-    return this.departsAt - earliestPossibleDeparture;
-  }
+const dec2bin = (dec) => {
+  return (dec >>> 0).toString(2);
 }
 
-let fleet = input[1].split(',')
-  .filter(busId => busId !== 'x')
-  .map(busId => {
-    return new Bus(parseInt(busId));
+let mask = '';
+
+let mem = [];
+
+input
+  .map(command => {
+    const [operation, value] = command.replace(/\s/g, '').split('=');
+    return {
+      operation,
+      value,
+    }
+  })
+  .forEach(command => {
+    if (command.operation === 'mask') {
+      mask = command.value;
+    } else {
+      let value = `${dec2bin(parseInt(command.value))}`.padStart(36, '0');
+      value = value.split('')
+        .map((bit, index) => {
+          return mask[index] === 'X' ? bit : mask[index];
+        })
+        .join('');
+      const [match, address] = command.operation.match(/mem\[([0-9]+)/);
+      mem[parseInt(address)] = value;
+    }
   })
 
-fleet = fleet.map(bus => {
-  return bus.setNextDepartureAfter(earliestPossibleDeparture);
-}).sort((a, b) => {
-  return a.departsAt - b.departsAt;
-})
+mem = mem.filter(value => value)
+  .map(value => parseInt(value, 2));
 
-const bus = fleet[0];
-const solution = bus.waitTime() * bus.id;
+console.log('main.1.js@:34', sum(mem));
 
-console.log('main.js@:24', solution);
