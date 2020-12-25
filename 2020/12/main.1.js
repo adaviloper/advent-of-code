@@ -1,4 +1,4 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
 class Ship {
   constructor(headings) {
@@ -49,7 +49,7 @@ class Ship {
   }
 }
 
-const headings = input.map(heading => {
+const headings = data.map(heading => {
   const direction = heading.substr(0, 1);
   const distance = parseInt(heading.substr(1));
   const command = (direction === 'R' || direction === 'L') ? 'steer' : 'propel';

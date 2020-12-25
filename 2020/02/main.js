@@ -1,4 +1,4 @@
-const input = require('./data.js').input;
+import { data } from './data.js'
 
 class Policy {
   constructor(data) {
@@ -64,11 +64,11 @@ class TobogganPolicy extends Policy {
   }
 }
 
-const validSledPasswords = input.filter(data => {
+const validSledPasswords = data.filter(data => {
   return new SledPolicy(data).validate();
 })
 
-const validTobogganPasswords = input.filter(data => {
+const validTobogganPasswords = data.filter(data => {
   return new TobogganPolicy(data).validate();
 })
 

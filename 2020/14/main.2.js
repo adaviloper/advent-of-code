@@ -1,5 +1,5 @@
-const {sum} = require('../utilities/functions');
-const input = require('./data').input;
+import { data } from './data.js'
+import { sum } from '../utilities/functions.js';
 
 const dec2bin = (dec) => {
   return (dec >>> 0).toString(2);
@@ -8,7 +8,7 @@ const dec2bin = (dec) => {
 let mask = '';
 let mem = {};
 
-input
+data
   .map(command => {
     let [operation, value] = command.replace(/\s/g, '').split('=');
     if (operation === 'mask') {

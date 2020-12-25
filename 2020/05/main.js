@@ -1,11 +1,13 @@
-const input = require('./data.js').input;
+import { data } from './data.js'
+import { tap } from '../utilities/functions.js';
 
-const tap = (data, callback) => {
-  callback(data);
-  return data;
-};
-
-const seatIds = input.map(seat => seat.replace(/F/g, '0').replace(/B/g, '1').replace(/L/g, '0').replace(/R/g, '1'))
+const seatIds = data
+  .map(seat => {
+    return seat.replace(/F/g, '0')
+      .replace(/B/g, '1')
+      .replace(/L/g, '0')
+      .replace(/R/g, '1');
+  })
   .reduce((accumulator, seat) => {
     return tap(accumulator, (accumulator) => {
       const row = parseInt(seat.substr(0, 7), 2);

@@ -1,9 +1,5 @@
-const input = require('./data').input;
-
-const tap = (data, callback) => {
-  callback(data);
-  return data;
-};
+import { data } from './data.js'
+import { tap } from '../utilities/functions.js';
 
 const convertToBags = (rule) => {
   return rule.split(', ')
@@ -17,7 +13,7 @@ const convertToBags = (rule) => {
     });
 }
 
-const bags = input.reduce((accumulator, rule) => {
+const bags = data.reduce((accumulator, rule) => {
   const [label, contains] = rule.replace(/( bags?|\.)/g, '').split(' contain ')
   const subBags = convertToBags(contains);
   return tap(accumulator, (bags) => {

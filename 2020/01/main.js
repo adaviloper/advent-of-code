@@ -1,4 +1,6 @@
-const input = require('./data.js').input.sort((a, b) => a - b);
+import { data } from './data.js'
+
+const input = data.sort((a, b) => a - b);
 
 const sum = (arr) => arr[0] + arr[1];
 

@@ -1,15 +1,5 @@
-const input = require('./data.js').input;
-
-const tap = (value, callback) => {
-  callback(value);
-  return value;
-}
-
-const sum = (array) => {
-  return array.reduce((accumulator, set) => {
-    return accumulator + set.size;
-  }, 0);
-}
+import { data } from './data.js'
+import { sum, tap } from '../utilities/functions.js';
 
 const unique = (group) => {
   return new Set(group.reduce((accumulator, answers) => {
@@ -17,9 +7,9 @@ const unique = (group) => {
   }, '').split(''));
 }
 
-const affirmed = input.map(group => unique(group))
+const affirmed = data.map(group => unique(group))
 
-const consensus = input.map(group => {
+const consensus = data.map(group => {
   const uniqueAnswers = unique(group);
   return tap(new Set(uniqueAnswers.values()), (agreedOnByAll) => {
     group.forEach(answers => {
@@ -32,4 +22,4 @@ const consensus = input.map(group => {
   })
 })
 
-console.log(sum(affirmed), sum(consensus));
+console.log(sum(affirmed, 'size'), sum(consensus, 'size'));

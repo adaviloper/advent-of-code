@@ -1,13 +1,8 @@
-const input = require('./data').input;
+import { data } from './data.js'
+import { sum } from '../utilities/functions.js';
 
-const sum = (array) => {
-  return array.reduce((accumulator, ticketValue) => {
-    return accumulator + ticketValue;
-  }, 0);
-}
-
-const rules = Object.keys(input.rules).reduce((accumulator, ruleKey) => {
-  const [lower, upper] = input.rules[ruleKey]
+const rules = Object.keys(data.rules).reduce((accumulator, ruleKey) => {
+  const [lower, upper] = data.rules[ruleKey]
     .split(' or ')
     .map(range => {
       return range.split('-').map(n => parseInt(n)).sort((a, b) => a - b);
@@ -19,7 +14,7 @@ const rules = Object.keys(input.rules).reduce((accumulator, ruleKey) => {
   return accumulator;
 }, {});
 
-const invalidValues = input.nearbyTickets
+const invalidValues = data.nearbyTickets
   .join(',')
   .split(',')
   .map(n => parseInt(n))

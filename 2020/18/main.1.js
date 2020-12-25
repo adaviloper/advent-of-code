@@ -1,5 +1,5 @@
-const input = require('./data').input;
-const { sum } = require('../utilities/functions');
+import { data } from './data.js'
+import { sum } from '../utilities/functions.js';
 
 const operatorRegex = /([0-9]+)([+*])([0-9]+)/;
 const parenthesesRegex = /(\(([0-9]+)([*+])([0-9]+)?\))/;
@@ -15,7 +15,7 @@ const solve = (operation, regex) => {
   return newOperation;
 }
 
-const totals = input.map(problem => {
+const totals = data.map(problem => {
   const foo = solve(problem.replace(/\s/g, ''), parenthesesRegex);
   return eval(solve(foo.replace(/\s/g, ''), operatorRegex));
 })

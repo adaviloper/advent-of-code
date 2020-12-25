@@ -1,7 +1,7 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
-const ROW_COUNT = input.length;
-const COL_COUNT = input[0].length;
+const ROW_COUNT = data.length;
+const COL_COUNT = data[0].length;
 let PART_2 = false;
 
 let iterationCount = 0;
@@ -310,7 +310,7 @@ class Floor extends Seat {
   }
 }
 
-const seats = input.map(row => row.split(''))
+const seats = data.map(row => row.split(''))
   .map((seatRow, row) => {
     return [
       ...seatRow.map((seat, col) => {
@@ -355,4 +355,3 @@ const getOutput = () => {
 PART_2 = true;
 board();
 console.log(iterationCount, getOutput().replace(/[^#]/g, '').length);
-// console.log('final:', seats[0]);

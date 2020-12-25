@@ -1,8 +1,8 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
 const calledNumbers = {};
 
-const numbers = input[0]
+const numbers = data[0]
   .split(',')
   .map(n => parseInt(n));
 

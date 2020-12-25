@@ -1,24 +1,20 @@
-const input = require('./data').input;
-
-const tap = (data, callback) => {
-  callback(data);
-  return data;
-}
+import { data } from './data.js'
+import { tap } from '../utilities/functions.js';
 
 const preambleSize = 25;
 
 const getPreamble = (index) => {
-  return input.filter((n, i) => i >= index - preambleSize && i < index);
+  return data.filter((n, i) => i >= index - preambleSize && i < index);
 }
 
 let preamble = [];
-let target = input[preambleSize];
+let target = data[preambleSize];
 let differences = {};
 
 const init = () => {
-  for (let i = preambleSize; i < input.length; i++) {
+  for (let i = preambleSize; i < data.length; i++) {
     preamble = getPreamble(i);
-    target = input[i];
+    target = data[i];
     differences = preamble.reduce((accumulator, n) => {
       return tap(accumulator, (differences) => {
         const collection = new Set(preamble);
@@ -37,7 +33,7 @@ const init = () => {
 const weakPoint = init();
 
 const sum = (start, end) => {
-  return input.filter((n, i) => i >= start && i <= end)
+  return data.filter((n, i) => i >= start && i <= end)
     .reduce((accumulator, n) => {
       return accumulator + n;
     }, 0);
@@ -46,7 +42,7 @@ const sum = (start, end) => {
 const findAddends = () => {
   let start = 0;
   let end = 1;
-  const target = input[weakPoint];
+  const target = data[weakPoint];
   let total;
   while (end !== weakPoint) {
     total = sum(start, end);
@@ -65,11 +61,11 @@ const findAddends = () => {
 const [addendA, addendB] = findAddends();
 
 let indexes = [
-    input.findIndex(n => n === input[addendA]),
-    input.findIndex(n => n === input[addendB]),
+    data.findIndex(n => n === data[addendA]),
+    data.findIndex(n => n === data[addendB]),
   ].sort((a, b) => a - b);
 
-const encryptionSpan = input.filter((n, i) => i >= indexes[0] && i <= indexes[1])
+const encryptionSpan = data.filter((n, i) => i >= indexes[0] && i <= indexes[1])
   .sort((a, b) => a - b)
 
-console.log('main.js@:5', input[weakPoint], encryptionSpan[0] + encryptionSpan[encryptionSpan.length - 1]);
+console.log('main.js@:5', data[weakPoint], encryptionSpan[0] + encryptionSpan[encryptionSpan.length - 1]);

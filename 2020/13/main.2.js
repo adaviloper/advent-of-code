@@ -1,6 +1,6 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
-const fleet = input[1].split(',')
+const fleet = data[1].split(',')
   .map((id, index) => {
     if (id === 'x') {
       return null;

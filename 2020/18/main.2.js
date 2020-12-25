@@ -1,5 +1,5 @@
-const input = require('./data').input;
-const { sum } = require('../utilities/functions');
+import { data } from './data.js'
+import { sum } from '../utilities/functions.js';
 
 const additionRegex = /([0-9]+)([+])([0-9]+)/;
 const multiplicationRegex = /([0-9]+)([*])([0-9]+)/;
@@ -43,7 +43,7 @@ const solve = (operation) => {
   return multiply(add(newOperation));
 }
 
-const totals = input.map(problem => {
+const totals = data.map(problem => {
   return parseInt(solve(problem.replace(/\s/g, '')));
 })
 

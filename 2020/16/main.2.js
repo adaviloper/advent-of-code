@@ -1,12 +1,12 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
 const transpose = (array) => {
   return array[0].map((_, colIndex) => array.map(row => row[colIndex]));
 };
 
 
-let rules = Object.keys(input.rules).reduce((accumulator, ruleKey) => {
-  const [lower, upper] = input.rules[ruleKey]
+let rules = Object.keys(data.rules).reduce((accumulator, ruleKey) => {
+  const [lower, upper] = data.rules[ruleKey]
     .split(' or ')
     .map(range => {
       return range.split('-').map(n => parseInt(n)).sort((a, b) => a - b);
@@ -21,7 +21,7 @@ let rules = Object.keys(input.rules).reduce((accumulator, ruleKey) => {
   return accumulator;
 }, {});
 
-const tickets = input.nearbyTickets
+const tickets = data.nearbyTickets
   .map(ticket => ticket.split(',').map(n => parseInt(n)));
 
 const validTickets = tickets
@@ -76,7 +76,7 @@ while (!rules.every(rule => rule.index !== -1)) {
 rules = rules.sort((a, b) => a.index - b.index);
 let product = 1;
 
-input.yourTicket.split(',')
+data.yourTicket.split(',')
   .map(n => parseInt(n))
   .reduce((ticket, value, index) => {
     if (rules[index].ruleKey.startsWith('departure')) {

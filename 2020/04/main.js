@@ -1,6 +1,6 @@
-const input = require('./data.js').input;
+import { data } from './data.js'
 
-const validPassportsForPart1 = input.filter(passport => Object.keys(passport).length > 6)
+const validPassportsForPart1 = data.filter(passport => Object.keys(passport).length > 6)
   .filter(passport => {
     return Object.keys(passport).length === 8 || passport.cid === undefined
   })

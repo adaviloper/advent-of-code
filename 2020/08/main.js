@@ -1,6 +1,6 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
-const srcCommands = input.map(command => {
+const srcCommands = data.map(command => {
   let [operation, value] = command.split(' ');
   const multiplier = value.substr(0, 1);
   value = parseInt(value.substr(1));
@@ -76,7 +76,6 @@ const part1 = finalOutput.filter(command => command.operation === 'acc' && comma
   }, 0);
 
 
-accumulator = 0;
 shouldFix = false
 willLoop(srcCommands, 0, false);
 const part2 = finalOutput.filter(command => command.operation === 'acc' && command.executed)

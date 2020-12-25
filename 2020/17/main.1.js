@@ -1,5 +1,4 @@
-const input = require('./data').input;
-const { flatten } = require('../utilities/functions');
+import { data } from './data.js'
 
 const cubes = {};
 
@@ -80,7 +79,7 @@ class Cube {
   }
 }
 
-input.map(row => row.split(''))
+data.map(row => row.split(''))
   .forEach((row, i) => {
     row.forEach((col, j) => {
       const cube = new Cube({x: i, y: j, z: 0}, col)

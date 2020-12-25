@@ -1,6 +1,6 @@
-const input = require('./data').input;
+import { data } from './data.js'
 
-const earliestPossibleDeparture = input[0];
+const earliestPossibleDeparture = data[0];
 
 class Bus {
   constructor(id) {
@@ -18,7 +18,7 @@ class Bus {
   }
 }
 
-let fleet = input[1].split(',')
+let fleet = data[1].split(',')
   .filter(busId => busId !== 'x')
   .map(busId => {
     return new Bus(parseInt(busId));

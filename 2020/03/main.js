@@ -1,10 +1,10 @@
-const input = require('./data.js').input;
+import { data } from './data.js'
 
-const BASE_WIDTH = input[0].length;
+const BASE_WIDTH = data[0].length;
 
 const traverse = (dx, dy) => {
   let column = 0;
-  return input.filter((_, index) => index % dy === 0)
+  return data.filter((_, index) => index % dy === 0)
     .map(line => {
     const index = column % BASE_WIDTH;
     column += dx;

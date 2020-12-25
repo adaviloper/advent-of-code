@@ -1,9 +1,5 @@
-const input = require('./data').input;
-
-const tap = (data, callback) => {
-  callback(data);
-  return data;
-}
+import { data } from './data.js'
+import { tap } from '../utilities/functions.js';
 
 const differences = {
   '-1': 0,
@@ -12,9 +8,9 @@ const differences = {
 
 const differenceList = [];
 
-let sortedAdapters = [0, ...input].sort((a, b) => a - b);
+let sortedAdapters = [0, ...data].sort((a, b) => a - b);
 sortedAdapters.push(sortedAdapters[sortedAdapters.length - 1] + 3)
-adapters = sortedAdapters.reduce((accumulator, joltage, index) => {
+const adapters = sortedAdapters.reduce((accumulator, joltage, index) => {
     return tap(accumulator, (accumulator) => {
       if (index === 0) {
         return;
