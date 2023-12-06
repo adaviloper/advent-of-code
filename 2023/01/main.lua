@@ -1,23 +1,6 @@
--- local function file_exists(file)
---   local f = io.open(file, 'rb')
---   if f then f:close() end
---   return f ~= nil
--- end
--- local function lines_from(file)
---   if not file_exists(file) then return {} end
---   local lines = {}
---   for line in io.lines(file) do
---     lines[#lines + 1] = line
---   end
---   return lines
--- end
---
--- local file = 'data.lua'
--- local lines = lines_from(file)
-
 local data = require('data')
 
-function problem1()
+local function problem1()
   local sum = 0
   for _, v in pairs(data) do
     v = v:gsub('[a-zA-Z]', '')
@@ -30,7 +13,7 @@ function problem1()
   return sum
 end
 
-function problem2()
+local function problem2()
   local sum = 0
   for _, v in pairs(data) do
     local temp_string = ''
