@@ -1,0 +1,46 @@
+services:
+  react:
+    container_name: react-app
+    build:
+      context: .
+      dockerfile: ./docker/react/Dockerfile
+    volumes:
+      - './2020/react:/app/'
+    ports:
+      - '9000:3000'
+  vue:
+    container_name: vue-app
+    build:
+      context: .
+      dockerfile: ./docker/vue/Dockerfile
+    volumes:
+      - './2020/vue-app:/app'
+    ports:
+      - '8001:8000'
+  aoc-2020:
+    container_name: aoc-2020
+    build:
+      context: .
+      dockerfile: ./docker/aoc-2020/Dockerfile
+    volumes:
+      - './2020/:/app'
+    ports:
+      - '9002:3000'
+  aoc-2023:
+    container_name: aoc-2023
+    build:
+      context: .
+      dockerfile: ./docker/lua/Dockerfile
+    volumes:
+      - './2020/:/app'
+    ports:
+      - '9003:3000'
+  aoc-2024:
+    container_name: aoc-2024
+    build:
+      context: .
+      dockerfile: ./docker/aoc-2024/Dockerfile
+    volumes:
+      - './2024/:/app'
+    ports:
+      - '9004:3000'
