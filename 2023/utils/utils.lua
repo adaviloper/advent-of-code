@@ -40,6 +40,19 @@ function M.keyBy(input, keyName)
    return t
 end
 
+function M.chunk(t, amount)
+   local n = {}
+   local temp = {}
+   for i = 1, #t do
+      table.insert(temp, t[i])
+      if i % (amount) == 0 then
+         table.insert(n, temp)
+         temp = {}
+      end
+   end
+   return n
+end
+
 function M.split(input, separator)
   local t = {}
   for str in string.gmatch(input, '[^' .. separator .. ']+') do
