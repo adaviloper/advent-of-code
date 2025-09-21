@@ -31,14 +31,8 @@ to quickly create a Cobra application.`,
 			return err
 		}
 
-		fmt.Printf("%d/%02d/%02d.ts", year, day, day)
-
-		command := exec.Command("deno", fmt.Sprintf("%d/%02d/01.ts", year, day));
-		output, err := command.Output();
-		if err != nil {
-			return err
-		}
-		fmt.Printf("%s", output)
+		runPuzzleSection(year, day, "01")
+		runPuzzleSection(year, day, "02")
 
 		return nil
 	},
@@ -56,4 +50,23 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runPuzzleSection(year int, day int, part string) error {
+	filePath := fmt.Sprintf("%d/%02d/%s.ts", year, day, part)
+	if !internal.FileExists(filePath) {
+		fmt.Printf("[%s] does not exist", filePath)
+		return fmt.Errorf("[%s] does not exist", filePath)
+	}
+
+	command := exec.Command("deno", filePath);
+	output, err := command.Output();
+	if err != nil {
+		fmt.Print(err.Error())
+		return err
+	}
+
+	fmt.Printf("Results for part %s: %s", part, output)
+
+	return nil
 }

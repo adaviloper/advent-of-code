@@ -1,18 +1,18 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-
 package internal
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
 
 // GetDayForPuzzle returns today's day of month clamped to the AoC range [1, 25].
 func GetDayForPuzzle(args []string) (int, error) {
-    day := time.Now().Day()
+  day := time.Now().Day()
 	// override if positional arg provided
 	if len(args) > 0 {
   		parsed, err := strconv.Atoi(args[0])
@@ -27,5 +27,21 @@ func GetDayForPuzzle(args []string) (int, error) {
 	}
 
     return day, nil
+}
+
+func DirExists(path string) bool {
+    info, err := os.Stat(path)
+    if err != nil {
+        return false
+    }
+    return info.IsDir()
+}
+
+func FileExists(path string) bool {
+    info, err := os.Stat(path)
+    if err != nil {
+        return false
+    }
+    return !info.IsDir()
 }
 
