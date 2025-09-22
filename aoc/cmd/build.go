@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/adaviloper/advent-of-code/aoc/internal"
+	"github.com/spf13/cobra"
 )
 
 // buildCmd represents the build command
@@ -58,7 +58,7 @@ var buildCmd = &cobra.Command{
                 return err
             }
 
-            if err := writeTsDataFile(dataFilePath, input); err != nil {
+            if err := writeTSDataFile(dataFilePath, input); err != nil {
                 return err
             }
             fmt.Printf("Wrote %s\n", dataFilePath)
@@ -69,7 +69,7 @@ var buildCmd = &cobra.Command{
         if internal.FileExists(testFilePath) {
             fmt.Printf("test.ts already exists at %s, skipping.\n", testFilePath)
         } else {
-            if err := writeEmptyTsDataFile(testFilePath); err != nil {
+            if err := writeEmptyTSDataFile(testFilePath); err != nil {
                 return err
             }
             fmt.Printf("Wrote %s\n", testFilePath)
@@ -172,8 +172,8 @@ func fetchAocInput(year int, day int, session string) (string, error) {
     return string(bytes), nil
 }
 
-// writeTsDataFile writes a TypeScript module exporting the input as a template literal.
-func writeTsDataFile(path string, input string) error {
+// writeTSDataFile writes a TypeScript module exporting the input as a template literal.
+func writeTSDataFile(path string, input string) error {
     // Escape backticks and prevent template interpolation
     escaped := strings.ReplaceAll(input, "`", "\\`")
     escaped = strings.ReplaceAll(escaped, "${", "\\${")
@@ -186,8 +186,8 @@ func writeTsDataFile(path string, input string) error {
     return nil
 }
 
-// writeEmptyTsDataFile writes a TypeScript module exporting an empty string.
-func writeEmptyTsDataFile(path string) error {
+// writeEmptyTSDataFile writes a TypeScript module exporting an empty string.
+func writeEmptyTSDataFile(path string) error {
     content := "export const data = ``;\n"
     if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
         return fmt.Errorf("failed to write %s: %w", path, err)
