@@ -18,3 +18,4 @@ export const sum = (array: number[], key = null) => {
   }, 0);
 };
 
+export const transpose = (array: any[][]) =>  array[0].map((_, colIndex) => array.map(row => row[colIndex]));
