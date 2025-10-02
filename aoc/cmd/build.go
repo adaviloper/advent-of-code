@@ -22,16 +22,15 @@ var buildCmd = &cobra.Command{
     Use:   "build",
     Short: "Create today's AoC directory and data.ts",
     Long:  "Creates 2024/<DD>/ and writes data.ts with Advent of Code input using AOC_SESSION.",
-    Args: cobra.MaximumNArgs(1),
+    Args: cobra.MaximumNArgs(2),
     RunE: func(cmd *cobra.Command, args []string) error {
-        year := time.Now().Year()
-        day, err := internal.GetDayForPuzzle(args)
+        year, day, err := internal.GetDateForPuzzle(args)
         if err != nil {
         	return err
         }
 
         // Resolve base directory for year 2024
-        yearDir, err := resolveYearRootDirectory(2024)
+        yearDir, err := resolveYearRootDirectory(year)
         if err != nil {
             return err
         }

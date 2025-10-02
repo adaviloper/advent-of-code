@@ -25,8 +25,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// year := time.Now().Year();
-		year := 2024;
-		day, err := internal.GetDayForPuzzle(args);
+		year, day, err := internal.GetDateForPuzzle(args);
 		if err != nil {
 			return err
 		}
