@@ -1,0 +1,9 @@
+* To Do
+
+** This Week (5)
+   - ( ) 2025-10-01 - `aoc run {day}` runs all files for a specific day
+   - ( ) 2025-10-01 - `aoc build {year} {day}` runs all files for a specific day in a given year
+   - ( ) 2025-10-01 - `aoc build {day}` runs all files for a specific day
+   - ( ) 2025-10-01 - `aoc run {year} {day}` runs all files for a specific day in a given year
+   - (x) 2025-10-01 - `aoc build {year}` runs all files for a specific day in a given year
+
