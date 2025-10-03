@@ -17,6 +17,10 @@ func GetDateForPuzzle(args []string) (int, int, error) {
         year = 2024
     }
     day := time.Now().Day()
+
+	if len(args) == 0 {
+		return year, day, nil
+	}
     minYear := 2020
 
     a, errA := strconv.Atoi(args[0])
