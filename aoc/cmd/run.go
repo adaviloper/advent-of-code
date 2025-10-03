@@ -65,7 +65,8 @@ func runPuzzleSection(year int, day int, part string) error {
 		return err
 	}
 
-	fmt.Printf("Results for part %s: %s", part, output)
+	fmt.Printf("[Part %s] Results for December %d, %d:\n", part, day, year)
+	fmt.Printf("%s", output)
 
 	return nil
 }
