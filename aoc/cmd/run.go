@@ -27,8 +27,7 @@ to quickly create a Cobra application.`,
 			return err
 		}
 
-		runPuzzleSection(year, day, "01")
-		runPuzzleSection(year, day, "02")
+		runPuzzleSection(year, day)
 
 		return nil
 	},
@@ -48,8 +47,8 @@ func init() {
 	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func runPuzzleSection(year int, day int, part string) error {
-	filePath := fmt.Sprintf("%s/%d/%02d/%s.ts", cfg.BaseDirectory, year, day, part)
+func runPuzzleSection(year int, day int) error {
+	filePath := fmt.Sprintf("%s/%d/%02d/main.ts", cfg.BaseDirectory, year, day)
 	if !internal.FileExists(filePath) {
 		fmt.Printf("[%s] does not exist\n", filePath)
 		return fmt.Errorf("[%s] does not exist\n", filePath)
@@ -62,7 +61,7 @@ func runPuzzleSection(year int, day int, part string) error {
 		return err
 	}
 
-	fmt.Printf("[Part %s] Results for December %d, %d:\n", part, day, year)
+	fmt.Printf("Results for December %d, %d:\n", day, year)
 	fmt.Printf("%s\n", output)
 
 	return nil

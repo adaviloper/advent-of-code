@@ -75,8 +75,7 @@ var buildCmd = &cobra.Command{
         }
 
         // Also create a test.ts file with an empty string if it doesn't exist
-        createTestFile(year, day, dayDir, 1)
-        createTestFile(year, day, dayDir, 2)
+        createTestFile(year, day, dayDir)
         
         return nil
     },
@@ -96,11 +95,11 @@ func init() {
 	// buildCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func createTestFile(year int, day int, dayDir string, part int) {
+func createTestFile(year int, day int, dayDir string) {
     // Also create a test.ts file with an empty string if it doesn't exist
-    puzzleFilePath02 := filepath.Join(dayDir, fmt.Sprintf("%02d.%s", part, cfg.TemplateLang))
+    puzzleFilePath02 := filepath.Join(dayDir, fmt.Sprintf("main.%s", cfg.TemplateLang))
     if internal.FileExists(puzzleFilePath02) {
-        fmt.Printf("%02d.%s already exists at %s, skipping.\n", part, cfg.TemplateLang, puzzleFilePath02)
+        fmt.Printf("main.%s already exists at %s, skipping.\n", cfg.TemplateLang, puzzleFilePath02)
     } else {
         if err := writeEmptyPuzzleFile(puzzleFilePath02, year, day); err != nil {
             return
@@ -194,11 +193,16 @@ import { test } from './test.ts';
 import * as helpers from '../../../utils/helpers.ts';
 import * as utils from '../../../utils/types.ts';
 
-const main = () => {
+const p1 = () => {
   return 'get to work';
 };
 
-console.log(main());
+const p2 = () => {
+  return 'get to work';
+};
+
+console.log(p1());
+console.log(p2());
 `, year, day)
 
     if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
