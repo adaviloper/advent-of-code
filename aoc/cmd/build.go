@@ -30,7 +30,7 @@ var buildCmd = &cobra.Command{
         }
 
         // Resolve base directory for year 2024
-        yearDir, err := resolveYearRootDirectory(year)
+        yearDir, err := resolveYearRootDirectory(cfg.BaseDirectory, year)
         if err != nil {
             return err
         }
@@ -44,7 +44,7 @@ var buildCmd = &cobra.Command{
         dataFilePath := filepath.Join(dayDir, "data.ts")
         if internal.FileExists(dataFilePath) {
             // If it exists, do not overwrite to avoid losing edits
-            fmt.Printf("data.ts already exists at %s, skipping.\n", dataFilePath)
+            fmt.Printf("data.%s already exists at %s, skipping.\n", cfg.TemplateLang, dataFilePath)
         } else {
             // Fetch input from Advent of Code
             session := os.Getenv("AOC_SESSION")
@@ -64,9 +64,9 @@ var buildCmd = &cobra.Command{
         }
 
         // Also create a test.ts file with an empty string if it doesn't exist
-        testFilePath := filepath.Join(dayDir, "test.ts")
+        testFilePath := filepath.Join(dayDir, fmt.Sprintf("test.%s", cfg.TemplateLang))
         if internal.FileExists(testFilePath) {
-            fmt.Printf("test.ts already exists at %s, skipping.\n", testFilePath)
+            fmt.Printf("test.%s already exists at %s, skipping.\n", cfg.TemplateLang, testFilePath)
         } else {
             if err := writeEmptyTSDataFile(testFilePath); err != nil {
                 return err
@@ -75,26 +75,8 @@ var buildCmd = &cobra.Command{
         }
 
         // Also create a test.ts file with an empty string if it doesn't exist
-        puzzleFilePath01 := filepath.Join(dayDir, "01.ts")
-        if internal.FileExists(puzzleFilePath01) {
-            fmt.Printf("01.ts already exists at %s, skipping.\n", puzzleFilePath01)
-        } else {
-            if err := writeEmptyPuzzleFile(puzzleFilePath01, year, day); err != nil {
-                return err
-            }
-            fmt.Printf("Wrote %s\n", puzzleFilePath01)
-        }
-
-        // Also create a test.ts file with an empty string if it doesn't exist
-        puzzleFilePath02 := filepath.Join(dayDir, "02.ts")
-        if internal.FileExists(puzzleFilePath02) {
-            fmt.Printf("02.ts already exists at %s, skipping.\n", puzzleFilePath02)
-        } else {
-            if err := writeEmptyPuzzleFile(puzzleFilePath02, year, day); err != nil {
-                return err
-            }
-            fmt.Printf("Wrote %s\n", puzzleFilePath02)
-        }
+        createTestFile(year, day, dayDir, 1)
+        createTestFile(year, day, dayDir, 2)
         
         return nil
     },
@@ -114,19 +96,27 @@ func init() {
 	// buildCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+func createTestFile(year int, day int, dayDir string, part int) {
+    // Also create a test.ts file with an empty string if it doesn't exist
+    puzzleFilePath02 := filepath.Join(dayDir, fmt.Sprintf("%02d.%s", part, cfg.TemplateLang))
+    if internal.FileExists(puzzleFilePath02) {
+        fmt.Printf("%02d.%s already exists at %s, skipping.\n", part, cfg.TemplateLang, puzzleFilePath02)
+    } else {
+        if err := writeEmptyPuzzleFile(puzzleFilePath02, year, day); err != nil {
+            return
+        }
+        fmt.Printf("Wrote %s\n", puzzleFilePath02)
+    }
+}
+
 // resolveYearRootDirectory tries to locate the year directory (e.g., 2024) either
 // in the current working directory or in the parent if running from the aoc CLI subfolder.
 // If it doesn't exist, it will be created in the most reasonable place.
-func resolveYearRootDirectory(year int) (string, error) {
-    cwd, err := os.Getwd()
-    if err != nil {
-        return "", fmt.Errorf("failed to get working directory: %w", err)
-    }
-
+func resolveYearRootDirectory(baseDir string, year int) (string, error) {
     yearName := fmt.Sprintf("%d", year)
 
     // Prefer ./<year> if it exists
-    candidate := filepath.Join(cwd, yearName)
+    candidate := filepath.Join(baseDir, yearName)
     if internal.DirExists(candidate) {
         return candidate, nil
     }
@@ -142,7 +132,7 @@ func resolveYearRootDirectory(year int) (string, error) {
 // using the provided session cookie value.
 func fetchAocInput(year int, day int, session string) (string, error) {
     // url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/input", year, day)
-    url := fmt.Sprintf("https://adventofcode.com/2024/day/%d/input", day)
+    url := fmt.Sprintf("https://adventofcode.com/%d/day/%d/input", year, day)
 
     req, err := http.NewRequest(http.MethodGet, url, nil)
     if err != nil {
@@ -195,22 +185,21 @@ func writeEmptyTSDataFile(path string) error {
 }
 
 func writeEmptyPuzzleFile(path string, year int, day int) error {
-	content := fmt.Sprintf(`
-	/**
-	 * https://adventofcode.com/%d/day/%d
-	 */
+	content := fmt.Sprintf(`/**
+ * https://adventofcode.com/%d/day/%d
+ */
 
-	import { data } from './data.ts';
-	import { test } from './test.ts';
-	import * as helpers from '../../../utils/helpers.ts';
-	import * as utils from '../../../utils/types.ts';
+import { data } from './data.ts';
+import { test } from './test.ts';
+import * as helpers from '../../../utils/helpers.ts';
+import * as utils from '../../../utils/types.ts';
 
-	const main = () => {
-	  return 'get to work';
-	};
+const main = () => {
+  return 'get to work';
+};
 
-	console.log(main());
-	`, year, day)
+console.log(main());
+`, year, day)
 
     if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
         return fmt.Errorf("failed to write %s: %w", path, err)

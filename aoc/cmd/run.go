@@ -6,8 +6,6 @@ package cmd
 import (
 	"fmt"
 	"os/exec"
-	// "os/exec"
-	// "time"
 
 	"github.com/adaviloper/advent-of-code/aoc/internal"
 	"github.com/spf13/cobra"
@@ -24,7 +22,6 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// year := time.Now().Year();
 		year, day, err := internal.GetDateForPuzzle(args);
 		if err != nil {
 			return err
@@ -52,10 +49,10 @@ func init() {
 }
 
 func runPuzzleSection(year int, day int, part string) error {
-	filePath := fmt.Sprintf("%d/%02d/%s.ts", year, day, part)
+	filePath := fmt.Sprintf("%s/%d/%02d/%s.ts", cfg.BaseDirectory, year, day, part)
 	if !internal.FileExists(filePath) {
-		fmt.Printf("[%s] does not exist", filePath)
-		return fmt.Errorf("[%s] does not exist", filePath)
+		fmt.Printf("[%s] does not exist\n", filePath)
+		return fmt.Errorf("[%s] does not exist\n", filePath)
 	}
 
 	command := exec.Command("deno", filePath);
@@ -66,7 +63,7 @@ func runPuzzleSection(year int, day int, part string) error {
 	}
 
 	fmt.Printf("[Part %s] Results for December %d, %d:\n", part, day, year)
-	fmt.Printf("%s", output)
+	fmt.Printf("%s\n", output)
 
 	return nil
 }
