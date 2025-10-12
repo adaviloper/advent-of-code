@@ -10,17 +10,18 @@ import (
 	"time"
 )
 
-// GetDateForPuzzle returns today's day of month clamped to the AoC range [1, 25].
+// GetDateForPuzzle returns today's day of month limited to the AoC range [1, 25].
 func GetDateForPuzzle(args []string) (int, int, error) {
-    year := time.Now().Year()
-    day := time.Now().Day()
+    now := time.Now()
+    year, month, day := now.Year(), int(now.Month()), now.Day()
+    if day > 25 { day = 25 }
 
     if _, err := validateDay(day); err != nil {
         return 0, 0, err
     }
 
-    if year == 2025 {
-        year = 2024
+    if month < 12 {
+        year -= 1
     }
 
 	if len(args) == 0 {
@@ -29,7 +30,7 @@ func GetDateForPuzzle(args []string) (int, int, error) {
 
     firstParam, errA := strconv.Atoi(args[0])
   	if errA != nil {
-    	return 0, 0, fmt.Errorf("invalid day %q: %w", firstParam, errA)
+    	return 0, 0, fmt.Errorf("invalid day %d: %w", firstParam, errA)
   	}
 
 	// override if positional arg provided
@@ -44,7 +45,7 @@ func GetDateForPuzzle(args []string) (int, int, error) {
     if len(args) == 2 {
         secondParam, errB := strconv.Atoi(args[1])
   	    if errB != nil {
-    	    return 0, 0, fmt.Errorf("invalid day %q: %w", secondParam, errB)
+    	    return 0, 0, fmt.Errorf("invalid day %d: %w", secondParam, errB)
   	    }
   	    year = firstParam
         day = secondParam
@@ -66,7 +67,7 @@ func validateDay(day int) (int, error) {
 }
 
 func validateYear(year int) (int, error) {
-	minYear := 2020
+	minYear := 2015
 
   	if year < minYear {
     	return 0, fmt.Errorf("year must be greater than %d, received %d", minYear, year)

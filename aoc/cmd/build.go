@@ -21,7 +21,7 @@ import (
 var buildCmd = &cobra.Command{
     Use:   "build",
     Short: "Create today's AoC directory and data.ts",
-    Long:  "Creates 2024/<DD>/ and writes data.ts with Advent of Code input using AOC_SESSION.",
+    Long:  "Creates <YYYY>/<DD>/ and writes data.ts with Advent of Code input using AOC_SESSION.",
     Args: cobra.MaximumNArgs(2),
     RunE: func(cmd *cobra.Command, args []string) error {
         year, day, err := internal.GetDateForPuzzle(args)
@@ -29,7 +29,7 @@ var buildCmd = &cobra.Command{
         	return err
         }
 
-        // Resolve base directory for year 2024
+        // Resolve base directory for assumed year
         yearDir, err := resolveYearRootDirectory(cfg.BaseDirectory, year)
         if err != nil {
             return err
@@ -41,7 +41,7 @@ var buildCmd = &cobra.Command{
             return fmt.Errorf("failed to create day directory %s: %w", dayDir, err)
         }
 
-        dataFilePath := filepath.Join(dayDir, "data.ts")
+        dataFilePath := filepath.Join(dayDir, fmt.Sprintf("data.%s", cfg.TemplateLang))
         if internal.FileExists(dataFilePath) {
             // If it exists, do not overwrite to avoid losing edits
             fmt.Printf("data.%s already exists at %s, skipping.\n", cfg.TemplateLang, dataFilePath)
@@ -52,7 +52,7 @@ var buildCmd = &cobra.Command{
                 return errors.New("AOC_SESSION environment variable is not set. Get your session cookie from adventofcode.com and set AOC_SESSION")
             }
 
-            input, err := fetchAocInput(2024, day, session)
+            input, err := fetchAocInput(year, day, session)
             if err != nil {
                 return err
             }
@@ -63,20 +63,19 @@ var buildCmd = &cobra.Command{
             fmt.Printf("Wrote %s\n", dataFilePath)
         }
 
-        // Also create a test.ts file with an empty string if it doesn't exist
+        // Also create a test file with an empty string if it doesn't exist
         testFilePath := filepath.Join(dayDir, fmt.Sprintf("test.%s", cfg.TemplateLang))
         if internal.FileExists(testFilePath) {
             fmt.Printf("test.%s already exists at %s, skipping.\n", cfg.TemplateLang, testFilePath)
         } else {
-            if err := writeEmptyTSDataFile(testFilePath); err != nil {
+            if err := writeTSDataFile(testFilePath, "update me"); err != nil {
                 return err
             }
             fmt.Printf("Wrote %s\n", testFilePath)
         }
 
-        // Also create a test.ts file with an empty string if it doesn't exist
-        createTestFile(year, day, dayDir)
-        
+        createMainPuzzleFile(year, day)
+
         return nil
     },
 }
@@ -95,16 +94,18 @@ func init() {
 	// buildCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func createTestFile(year int, day int, dayDir string) {
+func createMainPuzzleFile(year int, day int) {
     // Also create a test.ts file with an empty string if it doesn't exist
-    puzzleFilePath02 := filepath.Join(dayDir, fmt.Sprintf("main.%s", cfg.TemplateLang))
-    if internal.FileExists(puzzleFilePath02) {
-        fmt.Printf("main.%s already exists at %s, skipping.\n", cfg.TemplateLang, puzzleFilePath02)
+    // puzzleFilePath := filepath.Join(dayDir, fmt.Sprintf("main.%s", cfg.TemplateLang))
+    fmt.Sprintf("hit %s", year, day)
+    puzzleFilePath := fmt.Sprintf("%s/%d/%02d/main.%s", cfg.BaseDirectory, year, day, cfg.TemplateLang)
+    if internal.FileExists(puzzleFilePath) {
+        fmt.Printf("main.%s already exists at %s, skipping.\n", cfg.TemplateLang, puzzleFilePath)
     } else {
-        if err := writeEmptyPuzzleFile(puzzleFilePath02, year, day); err != nil {
+        if err := writeEmptyPuzzleFile(puzzleFilePath, year, day); err != nil {
             return
         }
-        fmt.Printf("Wrote %s\n", puzzleFilePath02)
+        fmt.Printf("Wrote %s\n", puzzleFilePath)
     }
 }
 
@@ -115,16 +116,16 @@ func resolveYearRootDirectory(baseDir string, year int) (string, error) {
     yearName := fmt.Sprintf("%d", year)
 
     // Prefer ./<year> if it exists
-    candidate := filepath.Join(baseDir, yearName)
-    if internal.DirExists(candidate) {
-        return candidate, nil
+    dir := filepath.Join(baseDir, yearName)
+    if internal.DirExists(dir) {
+        return dir, nil
     }
 
     // Otherwise, create ./<year>
-    if err := os.MkdirAll(candidate, 0o755); err != nil {
-        return "", fmt.Errorf("failed to create year directory %s: %w", candidate, err)
+    if err := os.MkdirAll(dir, 0o755); err != nil {
+        return "", fmt.Errorf("failed to create year directory %s: %w", dir, err)
     }
-    return candidate, nil
+    return dir, nil
 }
 
 // fetchAocInput downloads the Advent of Code input for the given year and day
@@ -174,36 +175,31 @@ func writeTSDataFile(path string, input string) error {
     return nil
 }
 
-// writeEmptyTSDataFile writes a TypeScript module exporting an empty string.
-func writeEmptyTSDataFile(path string) error {
-    content := "export const data = ``;\n"
-    if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
-        return fmt.Errorf("failed to write %s: %w", path, err)
-    }
-    return nil
-}
-
 func writeEmptyPuzzleFile(path string, year int, day int) error {
 	content := fmt.Sprintf(`/**
- * https://adventofcode.com/%d/day/%d
+ * https://adventofcode.com/%d/day/%02d
  */
 
-import { data } from './data.ts';
-import { test } from './test.ts';
-import * as helpers from '../../../utils/helpers.ts';
-import * as utils from '../../../utils/types.ts';
+import { data as realData } from './data.%s';
+import { data as testData } from './test.%s';
+import * as helpers from '../../../utils/helpers.%s';
+import * as utils from '../../../utils/types.%s';
 
-const p1 = () => {
+const input = Deno.args.includes('--real') ? realData : testData;
+
+const p1 = (input) => {
+  console.log('p1: ', input);
   return 'get to work';
 };
 
-const p2 = () => {
+const p2 = (input) => {
+  console.log('p2: ', input);
   return 'get to work';
 };
 
-console.log(p1());
-console.log(p2());
-`, year, day)
+console.log(p1(input));
+console.log(p2(input));
+`, year, day, cfg.TemplateLang, cfg.TemplateLang, cfg.TemplateLang, cfg.TemplateLang)
 
     if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
         return fmt.Errorf("failed to write %s: %w", path, err)
