@@ -46,6 +46,7 @@ func GetDateForPuzzle(args []string) (int, int, error) {
   	    if errB != nil {
     	    return 0, 0, fmt.Errorf("invalid day %q: %w", secondParam, errB)
   	    }
+  	    year = firstParam
         day = secondParam
     }
 
