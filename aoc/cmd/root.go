@@ -1,16 +1,24 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
 
+type Config struct {
+	BaseDirectory string `json:"base_directory"`
+	TemplateLang string `json:"template_language"`
+}
 
+var cfg Config
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -30,6 +38,18 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+  homeDir := os.Getenv("HOME")
+  config, configErr := os.ReadFile(fmt.Sprintf("%s/.config/aoc/config.json", homeDir))
+  if configErr != nil {
+    os.Exit(1)
+  }
+
+	configErr = json.Unmarshal(config, &cfg)
+	if configErr != nil {
+		log.Fatal("Error during Unmarshal(): ", configErr)
+	}
+	cfg.BaseDirectory = strings.Replace(cfg.BaseDirectory, "~", os.Getenv("HOME"), 1)
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
